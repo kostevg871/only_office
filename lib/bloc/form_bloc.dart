@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:auth_app/services/auth_service.dart';
 import 'package:auth_app/validation/validation_mixin.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -35,7 +34,7 @@ class FormBloc with ValidationMixin {
 
     final res =
         await authInfo.getUser(_portal.value, _email.value, _password.value);
-    final data = jsonDecode(res) as Map<String, dynamic>;
+    final data = jsonDecode(res);
 
     if (data['statusCode'] != 201) {
       addError(data['error']['message']);
@@ -43,7 +42,7 @@ class FormBloc with ValidationMixin {
     } else {
       addProgressBar(null);
       addError(null);
-      print(data["response"]["token"]);
+      AuthService.setPortal(_portal.value);
       AuthService.setToken(data['response']["token"]);
       Navigator.pushNamed(context, "/home");
       return data;

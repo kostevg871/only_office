@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class AuthService {
   static final SESSION = FlutterSession();
 
-  Future<dynamic> getUser(String portal, String login, String password) async {
+  Future<String> getUser(String portal, String login, String password) async {
     final baseUrl = 'http://$portal.onlyoffice.com/api/2.0/authentication';
 
     try {
@@ -33,6 +33,19 @@ class AuthService {
   static removeToken() async {
     await SESSION.prefs.clear();
   }
+
+  static setPortal(String portal) async {
+    _PortalData data = _PortalData(portal);
+    await SESSION.set('portals', data);
+  }
+
+  static Future<Map<String, dynamic>> getPortal() async {
+    return await SESSION.get('portals');
+  }
+
+  static removePortals() async {
+    await SESSION.prefs.clear();
+  }
 }
 
 class _AuthData {
@@ -44,6 +57,19 @@ class _AuthData {
     final Map<String, dynamic> data = Map<String, dynamic>();
 
     data['token'] = token;
+    return data;
+  }
+}
+
+class _PortalData {
+  String portal;
+
+  _PortalData(this.portal);
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+
+    data['portal'] = portal;
     return data;
   }
 }
