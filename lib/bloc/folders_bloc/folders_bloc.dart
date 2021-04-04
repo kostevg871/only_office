@@ -11,6 +11,7 @@ part 'folders_state.dart';
 
 class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
   FoldersService foldersService;
+
   FoldersBloc(this.foldersService) : super(FoldersInitial());
 
   @override
@@ -19,9 +20,13 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
   ) async* {
     if (event is FetchEvent) {
       yield FoldersLoading();
-
-      final Documents documents = await foldersService.getFolders();
-      yield FoldersSuccess(documents: documents);
+      try {
+        final Documents documents = await foldersService.getFolders();
+        yield FoldersSuccess(documents: documents);
+      } catch (e) {
+        print(e);
+        yield FoldersFailure();
+      }
     }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:auth_app/bloc/folders_bloc/folders_bloc.dart';
+import 'package:auth_app/bloc/my_user/my_user_bloc.dart';
 import 'package:auth_app/services/folders_service.dart';
+import 'package:auth_app/services/user_services.dart';
 import 'package:auth_app/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,14 +9,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("My Documents"),
-      ),
-      drawer: HomeDrawer(),
-      body: BlocProvider(
-        create: (context) => FoldersBloc(FoldersService()),
-        child: FoldersUi(),
+    return BlocProvider(
+      create: (context) => MyUserBloc(UsersService()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("My Documents"),
+        ),
+        drawer: HomeDrawer(),
+        body: BlocProvider(
+          create: (context) => FoldersBloc(FoldersService()),
+          child: FoldersUi(),
+        ),
       ),
     );
   }
@@ -27,17 +32,21 @@ class FoldersUi extends StatefulWidget {
 
 class _FoldersUiState extends State<FoldersUi> {
   FoldersBloc bloc;
+  MyUserBloc userBloc;
 
   @override
   void initState() {
     bloc = BlocProvider.of<FoldersBloc>(context);
+    userBloc = BlocProvider.of<MyUserBloc>(context);
     bloc.add(FetchEvent());
+    userBloc.add(FetchEventUser());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FoldersBloc, FoldersState>(
+      // ignore: missing_return
       builder: (context, state) {
         if (state is FoldersInitial) {
           return Center(child: CircularProgressIndicator());
@@ -63,6 +72,10 @@ class _FoldersUiState extends State<FoldersUi> {
                             leading: Icon(Icons.folder_open),
                             title: Text(
                                 state.documents.response.folders[index].title),
+                            subtitle: Text(state
+                                .documents.response.folders[index].created
+                                .toString()
+                                .substring(0, 10)),
                           );
                         }),
                   ),
