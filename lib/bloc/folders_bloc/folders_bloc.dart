@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auth_app/models/documents.dart';
+import 'package:auth_app/services/common_services.dart';
 import 'package:auth_app/services/folders_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -11,8 +12,10 @@ part 'folders_state.dart';
 
 class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
   FoldersService foldersService;
+  CommonService commonService;
 
-  FoldersBloc(this.foldersService) : super(FoldersInitial());
+  FoldersBloc(this.foldersService, this.commonService)
+      : super(FoldersInitial());
 
   @override
   Stream<FoldersState> mapEventToState(
@@ -25,6 +28,25 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
         yield FoldersSuccess(documents: documents);
       } catch (e) {
         print(e);
+        yield FoldersFailure();
+      }
+    }
+    if (event is FetchEventCommon) {
+      yield FoldersLoading();
+      try {
+        final Documents documents = await commonService.getCommonFile();
+        yield FoldersSuccess(documents: documents);
+      } catch (e) {
+        yield FoldersFailure();
+      }
+    }
+    if (event is FetchEventId) {
+      yield FoldersLoading();
+      try {
+        final Documents documents =
+            await foldersService.getFoldersId(event.idFolders);
+        yield FoldersSuccess(documents: documents);
+      } catch (e) {
         yield FoldersFailure();
       }
     }

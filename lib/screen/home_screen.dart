@@ -1,5 +1,6 @@
 import 'package:auth_app/bloc/folders_bloc/folders_bloc.dart';
 import 'package:auth_app/bloc/my_user/my_user_bloc.dart';
+import 'package:auth_app/services/common_services.dart';
 import 'package:auth_app/services/folders_service.dart';
 import 'package:auth_app/services/user_services.dart';
 import 'package:auth_app/widgets/drawer.dart';
@@ -10,15 +11,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MyUserBloc(UsersService()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("My Documents"),
-        ),
-        drawer: HomeDrawer(),
-        body: BlocProvider(
-          create: (context) => FoldersBloc(FoldersService()),
-          child: FoldersUi(),
+      create: (context) => FoldersBloc(FoldersService(), CommonService()),
+      child: BlocProvider(
+        create: (context) => MyUserBloc(UsersService()),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("My Documents"),
+          ),
+          drawer: HomeDrawer(),
+          body: FoldersUi(),
         ),
       ),
     );
@@ -54,7 +55,7 @@ class _FoldersUiState extends State<FoldersUi> {
           return Center(child: CircularProgressIndicator());
         } else if (state is FoldersFailure) {
           return Center(
-            child: Text("error"),
+            child: Text("Something went wrong"),
           );
         } else if (state is FoldersSuccess) {
           return SingleChildScrollView(
@@ -68,14 +69,22 @@ class _FoldersUiState extends State<FoldersUi> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: state.documents.response.folders.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Icon(Icons.folder_open),
-                            title: Text(
-                                state.documents.response.folders[index].title),
-                            subtitle: Text(state
-                                .documents.response.folders[index].created
-                                .toString()
-                                .substring(0, 10)),
+                          return GestureDetector(
+                            onTap: () {
+                              final String idFolders = state
+                                  .documents.response.folders[index].id
+                                  .toString();
+                              bloc.add(FetchEventId(idFolders: idFolders));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.folder_open),
+                              title: Text(state
+                                  .documents.response.folders[index].title),
+                              subtitle: Text(state
+                                  .documents.response.folders[index].created
+                                  .toString()
+                                  .substring(0, 10)),
+                            ),
                           );
                         }),
                   ),

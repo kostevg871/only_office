@@ -1,3 +1,4 @@
+import 'package:auth_app/bloc/folders_bloc/folders_bloc.dart';
 import 'package:auth_app/bloc/my_user/my_user_bloc.dart';
 import 'package:auth_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,12 @@ class HomeDrawer extends StatefulWidget {
 
 class _HomeDrawerState extends State<HomeDrawer> {
   // MyUserBloc userBloc;
+  FoldersBloc bloc;
 
   @override
   void initState() {
+    bloc = BlocProvider.of<FoldersBloc>(context);
+
     // userBloc = BlocProvider.of<MyUserBloc>(context);
     // userBloc.add(FetchEventUser());
     super.initState();
@@ -81,18 +85,28 @@ class _HomeDrawerState extends State<HomeDrawer> {
               ),
               MaterialButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    setState(() {
+                      bloc.add(FetchEvent());
+                    });
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil("/home", (route) => false);
                   },
                   child: Text("My Documents")),
               MaterialButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    setState(() {
+                      bloc.add(FetchEventCommon());
+                    });
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil("/home", (route) => false);
                   },
                   child: Text("Common Documents")),
               MaterialButton(
                 onPressed: () {
-                  Navigator.popAndPushNamed(context, '/login');
+                  // Navigator.popAndPushNamed(context, '/login');
                   AuthService.removeToken();
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil("/login", (route) => false);
                 },
                 child: Text("Log out"),
               )

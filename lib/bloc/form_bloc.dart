@@ -44,7 +44,7 @@ class FormBloc with ValidationMixin {
       addError(null);
       AuthService.setPortal(_portal.value);
       AuthService.setToken(data['response']["token"]);
-      Navigator.pushNamed(context, "/home");
+      Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
       return data;
     }
   }

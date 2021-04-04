@@ -16,7 +16,7 @@ class AuthService {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           });
-      print(res.body);
+
       return res?.body;
     } finally {}
   }
