@@ -11,10 +11,10 @@ class FetchEvent extends FoldersEvent {}
 
 class FetchEventCommon extends FoldersEvent {}
 
-class FetchEventId extends FoldersEvent {
+class FetchIdEvent extends FoldersEvent {
   final String idFolders;
+  FetchIdEvent({@required this.idFolders});
 
-  FetchEventId({@required this.idFolders});
   @override
   List<Object> get props => [idFolders];
 }

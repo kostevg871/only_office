@@ -16,7 +16,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   void initState() {
     bloc = BlocProvider.of<FoldersBloc>(context);
-
     // userBloc = BlocProvider.of<MyUserBloc>(context);
     // userBloc.add(FetchEventUser());
     super.initState();
@@ -87,18 +86,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   onPressed: () {
                     setState(() {
                       bloc.add(FetchEvent());
+                      //   Navigator.of(context)
+                      //       .pushNamedAndRemoveUntil("/home", (route) => false);
                     });
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil("/home", (route) => false);
+                    Navigator.pop(context);
                   },
                   child: Text("My Documents")),
               MaterialButton(
                   onPressed: () {
                     setState(() {
                       bloc.add(FetchEventCommon());
+
+                      // Navigator.of(context)
+                      //     .pushNamedAndRemoveUntil("/home", (route) => false);
                     });
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil("/home", (route) => false);
+                    Navigator.pop(context);
                   },
                   child: Text("Common Documents")),
               MaterialButton(

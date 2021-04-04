@@ -40,8 +40,8 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
         yield FoldersFailure();
       }
     }
-    if (event is FetchEventId) {
-      yield FoldersLoading();
+    if (event is FetchIdEvent) {
+      yield FoldersInitial();
       try {
         final Documents documents =
             await foldersService.getFoldersId(event.idFolders);

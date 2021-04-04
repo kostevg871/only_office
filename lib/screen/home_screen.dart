@@ -1,11 +1,14 @@
 import 'package:auth_app/bloc/folders_bloc/folders_bloc.dart';
 import 'package:auth_app/bloc/my_user/my_user_bloc.dart';
+import 'package:auth_app/models/documents.dart';
+import 'package:auth_app/screen/details_screen.dart';
 import 'package:auth_app/services/common_services.dart';
 import 'package:auth_app/services/folders_service.dart';
 import 'package:auth_app/services/user_services.dart';
 import 'package:auth_app/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -71,10 +74,24 @@ class _FoldersUiState extends State<FoldersUi> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
+                              final int indexFolders = index;
                               final String idFolders = state
                                   .documents.response.folders[index].id
                                   .toString();
-                              bloc.add(FetchEventId(idFolders: idFolders));
+                              final Documents doc = state.documents;
+                              // setState(() {
+                              //   bloc.add(FetchIdEvent(idFolders: idFolders));
+                              // });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FutureProvider(
+                                            create: (context) =>
+                                                FoldersService()
+                                                    .getFoldersId(idFolders),
+                                            child: DetailsScreen(
+                                                idFolders, doc, indexFolders),
+                                          )));
                             },
                             child: ListTile(
                               leading: Icon(Icons.folder_open),

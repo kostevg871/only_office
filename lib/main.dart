@@ -1,9 +1,8 @@
 import 'package:auth_app/provider/form_provider.dart';
 import 'package:auth_app/screen/auth_screen.dart';
+import 'package:auth_app/screen/home_screen.dart';
 import 'package:auth_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/Jeka_/AndroidStudioProjects/auth_app/lib/screen/home_screen.dart';
 
 void main() {
   runApp(MyApp());

@@ -39,6 +39,7 @@ class FoldersService {
       'Accept': 'application/json',
       'Authorization': '${token["token"]}'
     });
+    print(response);
     if (response.statusCode == 200) {
       final responseDocuments = jsonDecode(response.body);
       final Documents data = Documents.fromJson(responseDocuments);
